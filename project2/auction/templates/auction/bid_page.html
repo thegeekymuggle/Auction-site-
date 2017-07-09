@@ -1,0 +1,7 @@
+<h1>Bid for {{ product.product_name }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {% include 'auction/form_template.html' %}
+    <button type="submit" value="{{ product.price }}">Bid</button>
+</form>

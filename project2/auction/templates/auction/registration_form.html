@@ -1,0 +1,9 @@
+
+
+<form method="post">
+    {% csrf_token %}
+
+{% include 'auction/form_template.html' %}
+
+    <button type="submit">Submit</button>
+</form>

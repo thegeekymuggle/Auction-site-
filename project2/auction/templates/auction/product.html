@@ -1,0 +1,90 @@
+
+
+<body>
+
+<img src="{{ product.image.url }}">
+<h2>{{ product.product_name }}</h2>
+<h4>{{ product.p_category }}</h4><br>
+
+<h4>Auction Starts at: </h4>
+<p id="start">{{ product.start|date:"SHORT_DATE_FORMAT" }} {{ product.start|time:'H:i' }}</p>
+<h4>Current bid: {{ product.price }}</h4>
+<p id="timer"> </p>
+<p id="check"></p>
+<p id="check1"></p>
+
+
+<a href="{% url 'auction:bid-page' product.pk %}"><button style="display: none" id="form1">Bid here</button></a>
+
+
+
+<script>
+
+
+    var start = document.getElementById("start").innerHTML;
+    var k = start.slice(0, 10);
+    var s = Date.parse(k); //gives milliseconds from jan 1 1970 to given date 00:00
+    var n = new Date(s);
+
+
+    // calculate milliseconds to start time and add to s
+    var a = start.slice(10, 13); //return hh
+    var b = start.slice(14); //return mm
+    var startTime = s + a * 3600000 + (b / 60) * 3600000;
+
+    // calculate milliseconds from start time to end time and store
+    var endTime = startTime + 1800000;
+
+    //convert start time and end time to date object
+    var startDate = new Date(startTime);
+    var endDate = new Date(endTime);
+
+    //countdown timer
+    var now = new Date();
+    var d = new Date(now);
+    var milliseconds = d.getTime();
+    //var t = (now.getFullYear() - 1970) * 3.154e+10 + (now.getMonth()) * 2.628e+9 + now.getDay() * 8.64e+7 + now.getHours() * 3600000 + now.getMinutes() * 60000 + 785800000;
+    //document.getElementById("check").innerHTML = startTime;
+    //document.getElementById("check1").innerHTML = milliseconds;
+    if(milliseconds >= startTime & milliseconds <= endTime){
+       document.getElementById("form1").style.display="block";
+
+        var countDownDate = endDate.getTime();
+        //document.getElementById("demo").innerHTML = countDownDate;
+        var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
+
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+
+         document.getElementById("timer").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+          if (distance < 0) {
+           clearInterval(x);
+           document.getElementById("timer").innerHTML = "Auction completed.";
+           document.getElementById("form1").style.display="none";
+          }
+        },1000);
+    }
+    else if (t > endTime){
+        document.getElementById("timer").innerHTML ="The auction is over!";
+
+    }
+    else if(t < startTime){
+        document.getElementById("timer").innerHTML ="The auction hasn't started yet!";
+    }
+
+
+
+function bid() {
+
+
+}
+
+
+</script>
+
+</body>

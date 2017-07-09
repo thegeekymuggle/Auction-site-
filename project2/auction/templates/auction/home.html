@@ -1,0 +1,17 @@
+
+
+<h1> WELCOME TO HOMEPAGE </h1>
+
+{% if user.is_active %}
+    <h3>Welcome {{ request.user.username }}</h3>
+    <ul>
+{% for category in all_categories %}
+
+    <li> <a href="{% url 'auction:category-page' category.pk %}"><label>{{ category.category_name }}</label></a></li>
+
+{% endfor %}
+    </ul>
+
+    <a href="{% url 'auction:product-reg' %}">Click here to sell a product</a>
+
+{% endif %}
