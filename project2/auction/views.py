@@ -66,24 +66,6 @@ class ProductReg(CreateView):
     fields = ['product_name', 'p_category', 'price', 'start', 'image']
 
 
-        # def get(self, request, pk):
-        #  form = self.form_class(None)
-        # return render(request, self.template_name, {'form': form, 'pk': pk})
-
-        # def post(self, request, pk):
-        #  form = self.form_class(request.POST)
-
-        # if form.is_valid:
-        # user = form.save(commit=False)
-        #    bid = request.POST['price']
-        #   user = product.objects.get(pk=pk)
-        #  if bid > user.price:
-        #     user.price = float(bid)
-        #    user.highest = request.user.username
-        #   user.save()
-        # return redirect(reverse('auction:product-detail', kwargs={'pk': pk}))
-
-
 class BidView(UpdateView):
     form_class = BidForm
     model = product
@@ -92,9 +74,8 @@ class BidView(UpdateView):
 
     def post(self, request, pk):
         user = product.objects.get(pk=pk)
-        bid = request.POST['price']
-        print user.price
-        print bid
+        bid = float(request.POST['price'])
+       
         print bool(bid > user.price)
         if bid > user.price:
             user.highest = request.user.username
