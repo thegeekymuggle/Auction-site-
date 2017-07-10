@@ -35,7 +35,7 @@ class ProductDetail(generic.DetailView):
     def get_queryset(self):
         user = product.objects.get(pk=self.kwargs['pk'])
         star = user.start
-        x = datetime.timedelta(minutes=3)
+        x = datetime.timedelta(minutes=30)
         end = (datetime.datetime.combine(datetime.date.today(), star) + x).time()
         time_now = datetime.datetime.now()
         t = time_now.time().replace(microsecond=0)
