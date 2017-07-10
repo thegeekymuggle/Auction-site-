@@ -1,18 +1,15 @@
 
 <ul>
 
-    {% for product in category.product_set.all %}
+    {% for product in all_products %}
+
         <li><a href="{% url 'auction:product-detail' product.pk %}">{{ product.product_name }}</a></li>
-    <img src="{{ product.image.url }}">
+
+        <img src="{{ product.image.url }}">
 
     {% endfor %}
 
 </ul>
-
-
-
-
-
 
 
 
