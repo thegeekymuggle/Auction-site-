@@ -1,16 +1,40 @@
 from __future__ import unicode_literals
 
-from django.http.response import HttpResponseRedirect
+import datetime
+import sched
+import time
 
-from django.http import HttpResponse, request
-from django.urls import reverse_lazy, reverse
+from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.urls import reverse
 from django.views import generic
 from django.views.generic import View, CreateView, UpdateView
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render
-from django.shortcuts import redirect
 from .forms import UserRegForm, BidForm
 from .models import category, product
+
+# s = sched.scheduler(time.time, time.sleep)
+
+
+# def AuctionCheck(sc, pk):
+#    print 1222222
+#    user = product.objects.get(pk=pk)
+#    start = user.start
+#    x = datetime.timedelta(minutes=30)
+#    end = (datetime.datetime.combine(datetime.date.today(), start) + x).time()
+#    time_now = datetime.datetime.now()
+#    t = time_now.time().replace(microsecond=0)
+#    if t > end:
+#        print 111111
+#
+#        #   user.status = True
+#        #   user.save()
+#    s.enter(60, 1, AuctionCheck, (sc,))
+#
+
+# s.enter(60, 1, AuctionCheck, (s,))
+# s.run()
+# print 123
 
 
 class CategoryView(generic.DetailView):
@@ -75,10 +99,18 @@ class BidView(UpdateView):
     def post(self, request, pk):
         user = product.objects.get(pk=pk)
         bid = float(request.POST['price'])
-       
-        print bool(bid > user.price)
-        if bid > user.price:
-            user.highest = request.user.username
-            user.price = bid
-            user.save()
+        # do backend authentication, verify time difference here
+        start = user.start
+        x = datetime.timedelta(minutes=30)
+        end = (datetime.datetime.combine(datetime.date.today(), start) + x).time()
+        time_now = datetime.datetime.now()
+        t = time_now.time().replace(microsecond=0)
+        print time_now
+        print start
+        if t >= start and t <= end:
+            if bid > user.price:
+                user.highest = request.user.username
+                user.price = bid
+                user.save()
+
         return redirect(reverse('auction:product-detail', kwargs={'pk': pk}))
