@@ -1,9 +1,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import sched
-import time
-
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -13,33 +10,14 @@ from django.views.generic import View, CreateView, UpdateView
 from .forms import UserRegForm, BidForm
 from .models import category, product
 
-# s = sched.scheduler(time.time, time.sleep)
 
-
-# def AuctionCheck(sc, pk):
-#    print 1222222
-#    user = product.objects.get(pk=pk)
-#    start = user.start
-#    x = datetime.timedelta(minutes=30)
-#    end = (datetime.datetime.combine(datetime.date.today(), start) + x).time()
-#    time_now = datetime.datetime.now()
-#    t = time_now.time().replace(microsecond=0)
-#    if t > end:
-#        print 111111
-#
-#        #   user.status = True
-#        #   user.save()
-#    s.enter(60, 1, AuctionCheck, (sc,))
-#
-
-# s.enter(60, 1, AuctionCheck, (s,))
-# s.run()
-# print 123
-
-
-class CategoryView(generic.DetailView):
-    model = category
+class CategoryView(generic.ListView):
     template_name = 'auction/category.html'
+    context_object_name = 'all_products'
+
+    def get_queryset(self):
+        print self.kwargs['pk']
+        return product.objects.filter(status=False, p_category=self.kwargs['pk'])
 
 
 class HomeView(generic.ListView):
@@ -53,6 +31,19 @@ class HomeView(generic.ListView):
 class ProductDetail(generic.DetailView):
     model = product
     template_name = 'auction/product.html'
+
+    def get_queryset(self):
+        user = product.objects.get(pk=self.kwargs['pk'])
+        star = user.start
+        x = datetime.timedelta(minutes=3)
+        end = (datetime.datetime.combine(datetime.date.today(), star) + x).time()
+        time_now = datetime.datetime.now()
+        t = time_now.time().replace(microsecond=0)
+      
+        if t >= end:
+            user.status = True
+            user.save()
+        return product.objects.filter(pk=self.kwargs['pk'])
 
 
 class UserReg(View):
@@ -95,6 +86,7 @@ class BidView(UpdateView):
     model = product
     # fields = ['price']
     template_name = 'auction/bid_page.html'
+    sold = []
 
     def post(self, request, pk):
         user = product.objects.get(pk=pk)
@@ -111,6 +103,9 @@ class BidView(UpdateView):
             if bid > user.price:
                 user.highest = request.user.username
                 user.price = bid
+                user.status = True
                 user.save()
 
         return redirect(reverse('auction:product-detail', kwargs={'pk': pk}))
+
+
