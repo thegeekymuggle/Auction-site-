@@ -1,6 +1,7 @@
 <h1>Enter Product details</h1>
 
-<h2>NOTE: Please enter start time in this format: 'mm/dd/yy hh:mm'</h2>
+<h2>NOTE: Please enter start time in this format: 'hh:mm'</h2>
+<h2>All auctions are conducted on the same day of registration.</h2>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% include 'auction/form_template.html' %}
